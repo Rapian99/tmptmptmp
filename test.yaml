@@ -1,0 +1,163 @@
+startDelaySeconds: 0
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+
+# Tylko JVM + JBoss (zero clusteringu)
+whitelistObjectNames:
+  # JVM
+  - "java.lang:*"
+  - "java.nio:*"
+
+  # JBoss / WildFly
+  - "jboss.as:*"
+  - "jboss.threads:*"
+
+
+rules:
+  # =========================
+  # ===== JVM SECTION =======
+  # =========================
+
+  # MEMORY
+  - pattern: 'java.lang:type=Memory'
+    name: jvm_memory_bytes
+    help: "JVM memory usage"
+    type: GAUGE
+    attr:
+      HeapMemoryUsage.used: heap_used
+      HeapMemoryUsage.committed: heap_committed
+      HeapMemoryUsage.max: heap_max
+      NonHeapMemoryUsage.used: nonheap_used
+      NonHeapMemoryUsage.committed: nonheap_committed
+      NonHeapMemoryUsage.max: nonheap_max
+
+  # MEMORY POOLS
+  - pattern: 'java.lang:type=MemoryPool,name=(.*)'
+    name: jvm_memory_pool_bytes
+    type: GAUGE
+    labels:
+      pool: "$1"
+    attr:
+      Usage.used: used
+      Usage.committed: committed
+      Usage.max: max
+
+  # GARBAGE COLLECTOR
+  - pattern: 'java.lang:type=GarbageCollector,name=(.*)'
+    name: jvm_gc
+    type: COUNTER
+    labels:
+      gc: "$1"
+    attr:
+      CollectionCount: collections
+      CollectionTime: time_ms
+
+  # THREADING
+  - pattern: 'java.lang:type=Threading'
+    name: jvm_threads
+    type: GAUGE
+    attr:
+      ThreadCount: count
+      PeakThreadCount: peak
+      DaemonThreadCount: daemon
+
+  # CLASSES
+  - pattern: 'java.lang:type=ClassLoading'
+    name: jvm_classes
+    type: GAUGE
+    attr:
+      LoadedClassCount: loaded
+      TotalLoadedClassCount: total_loaded
+      UnloadedClassCount: unloaded
+
+  # SYSTEM / OS
+  - pattern: 'java.lang:type=OperatingSystem'
+    name: jvm_os
+    type: GAUGE
+    attr:
+      AvailableProcessors: available_processors
+      SystemLoadAverage: system_load_average
+      ProcessCpuLoad: process_cpu_load
+      SystemCpuLoad: system_cpu_load
+      ProcessCpuTime: process_cpu_time_ns
+      OpenFileDescriptorCount: open_fds
+      MaxFileDescriptorCount: max_fds
+
+  # NIO BUFFER POOLS
+  - pattern: 'java.nio:type=BufferPool,name=(.*)'
+    name: jvm_buffer_pool
+    type: GAUGE
+    labels:
+      pool: "$1"
+    attr:
+      MemoryUsed: bytes_used
+      TotalCapacity: bytes_capacity
+      Count: buffers
+
+  # =========================
+  # ===== JBOSS SECTION =====
+  # =========================
+
+  # DATASOURCE POOLS
+  - pattern: 'jboss.as:subsystem=datasources,data-source=(.*)'
+    name: jboss_datasource_pool
+    type: GAUGE
+    labels:
+      datasource: "$1"
+    attr:
+      ActiveCount: active
+      AvailableCount: available
+      MaxUsedCount: max_used
+      MaxWaitCount: max_wait
+
+  # XA DATASOURCES
+  - pattern: 'jboss.as:subsystem=datasources,xa-data-source=(.*)'
+    name: jboss_xa_datasource_pool
+    type: GAUGE
+    labels:
+      datasource: "$1"
+    attr:
+      ActiveCount: active
+      AvailableCount: available
+      MaxUsedCount: max_used
+      MaxWaitCount: max_wait
+
+  # HTTP LISTENERS (Undertow)
+  - pattern: 'jboss.as:subsystem=undertow,server=([^,]+),http-listener=([^,]+)'
+    name: jboss_undertow_http
+    type: GAUGE
+    labels:
+      server: "$1"
+      listener: "$2"
+    attr:
+      RequestCount: requests
+      ErrorCount: errors
+      BytesSent: bytes_sent
+      BytesReceived: bytes_received
+      ProcessingTime: processing_time_ms
+
+  # AJP LISTENERS (if used)
+  - pattern: 'jboss.as:subsystem=undertow,server=([^,]+),ajp-listener=([^,]+)'
+    name: jboss_undertow_ajp
+    type: GAUGE
+    labels:
+      server: "$1"
+      listener: "$2"
+    attr:
+      RequestCount: requests
+      ErrorCount: errors
+      BytesSent: bytes_sent
+      BytesReceived: bytes_received
+      ProcessingTime: processing_time_ms
+
+  # THREAD POOLS
+  - pattern: 'jboss.threads:thread-pool=(.*)'
+    name: jboss_thread_pool
+    type: GAUGE
+    labels:
+      pool: "$1"
+    attr:
+      ActiveCount: active
+      QueueSize: queue
+      LargestPoolSize: largest
+      CurrentThreadCount: current
