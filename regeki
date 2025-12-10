@@ -1,0 +1,34 @@
+(?P<timestamp>^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\s+
+(?P<tz>\w+)\s+
+\[(?P<tz_raw>[^\]\n]+)\]\s+
+\(tid=(?P<thread_id>\d+)\)\s+
+\[(?P<instance>\S+)\]
+\[(?P<node>[^\]\s]+)\]
+\[APIGW:(?P<transaction_id>\S+):(?P<transaction_id_2>\S+):(?P<session_id>\S+)\]\s+
+(?P<message>[\s\S]*?)\s+API:\s+(?P<api_name>\w+)\s+
+API Version:\s+(?P<api_version>\d+)\s+
+Invoked at:\s+(?P<invoked_at>[\s\S]*?)\s+
+Application Name:\s+(?P<application_name>[\s\S]*?)\s+
+Application IP Address:\s+(?P<application_ip>\S+)\s+
+Application ID:\s+(?P<application_id>[\s\S]*?)\s+
+Status:\s+(?P<status>\w+)\s+
+Request payload:\s+(?P<request_payload>[\s\S]*?)\s+
+Request headers:\s+(?P<request_headers>[\s\S]*?)\s+
+Query parameters:\s+(?P<query_parameters>[\s\S]*?)\s+
+Response payload:\s+(?P<response_payload>[\s\S]*?)\s+
+Response headers:\s+(?P<response_headers>[\s\S]*?)\s+
+Operation/Resource Name:\s+(?P<operation_name>[\s\S]*?)\s+
+Target endpoint:\s+(?P<target_endpoint>\S+)\s+
+Partner ID:\s+(?P<partner_id>[\s\S]*?)\s+
+Correlation ID:\s+APIGW:(?P<Correlation_ID>[\s\S]*?)\s+
+Error origin:\s+(?P<error_origin>[\s\S]*?)\s+
+Custom fields:\s+(?P<custom_fields>[\s\S]*?)\s+
+Native Request Headers:\s+(?P<native_request_headers>[\s\S]*?)\s+
+Native Request Payload:\s+(?P<native_request_payload>[\s\S]*?)\s+
+Native Response Headers:\s+(?P<native_response_headers>[\s\S]*?)\s+
+Native Response Payload:\s+(?P<native_response_payload>[\s\S]*?)\s+
+Native HTTP Method:\s+(?P<native_http_method>\w+)\s+
+Native URL:\s+(?P<native_url>\S+)\s+
+External Calls:\s+\[(?P<external_call_data>[\s\S]*?)\]\s+
+Source Gateway Node:\s+(?P<source_gateway_node>\S+)\s+
+Server ID:\s+(?P<server>[\s\S]+)$
